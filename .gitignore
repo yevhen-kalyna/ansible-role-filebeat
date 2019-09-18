@@ -18,3 +18,8 @@ tests.out
 vbox_host.cfg
 .DS_Store
 *.py[co]
+molecule/*/.molecule
+*.log
+*.swp
+*_ssh_key
+*_ssh_key.pub
