@@ -1,0 +1,8 @@
+---
+- name: Converge
+  any_errors_fatal: true
+  hosts: all
+  roles:
+    - role: ansible-role-filebeat
+  vars:
+    test: true
