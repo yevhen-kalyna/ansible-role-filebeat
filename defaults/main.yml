@@ -1,2 +1,23 @@
 ---
-# defaults file for ansible-role-filebeat
+es_major_version: "7.x"
+es_is_oss: true
+es_version: "7.3.0"
+
+filebeat_create_config: "true"
+filebeat_enabled: "yes"
+filebeat_repo_key: 'https://artifacts.elastic.co/GPG-KEY-elasticsearch'
+filebeat_run_state: started
+
+filebeat_output_elasticsearch: "localhost:9200"
+filebeat_output_elasticsearch_enabled: true
+filebeat_output_logstash: "localhost:5044"
+filebeat_output_logstash_enabled: false
+
+filebeat_ssl_enabled: false
+filebeat_ssl_insecure: "false"
+filebeat_ssl_dir: /etc/ssl/certs
+filebeat_ssl_certificate_file: "mydomain.crt"
+filebeat_ssl_certificate_authorities_file: "mydomain.pem"
+filebeat_ssl_key_file: "mydomain.key"
+
+filebeat_index: "filebeat-{[fields.type]:other}-%{+yyyy.MM}"

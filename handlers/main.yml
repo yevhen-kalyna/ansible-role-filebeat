@@ -1,2 +1,13 @@
 ---
 # handlers file for ansible-role-filebeat
+- name: restart filebeat
+  service:
+    name: filebeat
+    state: restarted
+  when: filebeat_run_state | bool | default('started') == 'started'
+
+- name: check filebeat status
+  service:
+    name: filebeat
+    state: started
+  when: filebeat_run_state | bool | default('started') == 'started'

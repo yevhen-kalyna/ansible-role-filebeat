@@ -1,0 +1,31 @@
+---
+- name: Install the Elastic.co PGP Key for YUM
+  rpm_key:
+    key: "{{ filebeat_repo_key }}"
+    state: present
+  when: es_use_repository is undefined or not es_use_repository
+
+- name: Add Elastic.co YUM Repo
+  yum_repository:
+    name: "elasticsearch-{{ es_major_version }}"
+    baseurl: "https://artifacts.elastic.co/packages/{{ es_major_version }}/yum"
+    description: "Elasticsearch repository {{ es_major_version }} packages"
+    gpgcheck: 1
+    gpgkey: "{{ filebeat_repo_key }}"
+    enabled: 1
+  when: not es_is_oss | bool
+
+- name: Add Elastic.co OSS YUM Repo
+  yum_repository:
+    name: "elasticsearch-oss-{{ es_major_version }}"
+    baseurl: "https://artifacts.elastic.co/packages/oss-{{ es_major_version }}/yum"
+    description: "Elasticsearch repository for OSS {{ es_major_version }} packages"
+    gpgcheck: 1
+    gpgkey: "{{ filebeat_repo_key }}"
+    enabled: 1
+  when: es_is_oss | bool
+
+- name: Install Filebeat via YUM
+  yum:
+    name: "filebeat-{{ es_version }}"
+    state: present

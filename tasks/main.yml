@@ -1,2 +1,47 @@
 ---
 # tasks file for ansible-role-filebeat
+- name: Include OS-specific vars
+  include_vars: "filebeat-{{ansible_os_family}}.yml"
+  tags:
+    - config
+- name: Include tasks to install Filebeat
+  include: "install-{{ ansible_os_family }}.yml"
+
+- name: Create Filebeat config file
+  template:
+    src: "templates/filebeat.yml.j2"
+    dest: "{{ filebeat_config_file }}"
+  when: filebeat_create_config | bool
+  notify:
+    - restart filebeat
+  tags:
+    - config
+
+- name: Ensure Filebeat SSL key pair directory exists.
+  file:
+    path: "{{ filebeat_ssl_dir }}"
+    state: directory
+  when:
+    - filebeat_ssl_enabled | bool
+    - filebeat_ssl_key_file | bool
+    - filebeat_ssl_certificate_file | bool
+- name: Copy SSL key and cert for filebeat.
+  copy:
+    src: "{{ item }}"
+    dest: "{{ filebeat_ssl_dir }}/{{ item | basename }}"
+    mode: 0644
+  with_items:
+    - "{{ filebeat_ssl_key_file }}"
+    - "{{ filebeat_ssl_certificate_file }}"
+  notify: restart filebeat
+  when:
+    - filebeat_ssl_enabled | bool
+    - filebeat_ssl_key_file | bool
+    - filebeat_ssl_certificate_file | bool
+
+- name: Enable Filebeat to start at boot
+  service:
+    name: filebeat
+    state: "{{ filebeat_run_state | default('started') }}"
+    enabled: "{{ filebeat_enabled | default('yes') }}"
+  notify: check filebeat status

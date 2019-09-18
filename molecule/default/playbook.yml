@@ -4,5 +4,3 @@
   hosts: all
   roles:
     - role: ansible-role-filebeat
-  vars:
-    test: true
