@@ -10,33 +10,49 @@ Have nice feature with config like vars in Ansible, it's mean you can write file
 Some images don't have CA for requests and will fail. # TODO: Find images with CA installed.
 Need to have installed and configured Molecule.
 
-$ molecule converge
+```bash
+molecule converge
+```
+
 Create docker containers and deploy role.
 
-$ molecule destroy
-Remove containers.
+```bash
+molecule destroy
+```
 
-$ molecule create and prepare containers.
+Remove containers
 
-$ molecule lint
+```bash
+molecule create
+```
+
+Create and prepare containers
+
+```bash
+molecule lint
+```
+
 Run yamllint.
 
-$ molecule converge -- --tags config
+```bash
+molecule converge -- --tags config
+```
+
 Redeploy config only and restart service.
 
 # Requirements
 ------------
 
 Tested on next OS:
-  RHEL:
-    CentOS 6;
-    CentOS 7;
-    Fedora 30;
-  Debian:
-    Debian 9;
-    Debian 10;
-    Ubuntu 16.04;
-    Ubuntu 18.04;
+ * RHEL:
+   * CentOS 6;
+   * CentOS 7;
+   * Fedora 30;
+ * Debian:
+   * Debian 9;
+   * Debian 10;
+   * Ubuntu 16.04;
+   * Ubuntu 18.04;
 
 Do not use filebeat.module when your Filebeat output is Elasticsearch, because a lot of modules use geoip and AWS doesn't support its plugin.
 
