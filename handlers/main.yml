@@ -1,13 +1,20 @@
 ---
 # handlers file for ansible-role-filebeat
 - name: restart filebeat
+  become: true
   service:
     name: filebeat
     state: restarted
-  when: filebeat_run_state | bool | default('started') == 'started'
+  when: filebeat_run_state == 'started'
 
 - name: check filebeat status
+  become: true
   service:
     name: filebeat
     state: started
-  when: filebeat_run_state | bool | default('started') == 'started'
+  when: filebeat_run_state == 'started'
+  register: service-status
+
+- name: Filebeat not started. Check errors below.
+  command: "{{ filebeat_bin_dir }}/filebeat -c {{ filebeat_config_file }}"
+  when: "'FAILED' in service-status.stderr"
