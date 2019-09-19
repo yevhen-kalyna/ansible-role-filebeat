@@ -5,7 +5,7 @@ galaxy_info:
   description: Ansible Role for Filebeat installing and configuring include OSS (Open Distro) pkgs
 
   issue_tracker_url: https://gitlab.com/yevhen.kalyna/ansible-role-filebeat/issues
-  license: MIT
+  license: BSD
   min_ansible_version: 2.4
 
   platforms:
