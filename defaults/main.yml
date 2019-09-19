@@ -10,6 +10,7 @@ filebeat_run_state: started
 
 filebeat_output_elasticsearch: "localhost:9200"
 filebeat_output_elasticsearch_enabled: true
+
 filebeat_output_logstash: "localhost:5044"
 filebeat_output_logstash_enabled: false
 
@@ -20,4 +21,55 @@ filebeat_ssl_certificate_file: "mydomain.crt"
 filebeat_ssl_certificate_authorities_file: "mydomain.pem"
 filebeat_ssl_key_file: "mydomain.key"
 
-filebeat_index: "filebeat-{[fields.type]:other}-%{+yyyy.MM}"
+filebeat_index: "filebeat-%{[fields.type]:other}-%{+yyyy.MM}"
+
+filebeat_config_content: |
+  name: "{{ inventory_hostname }}"
+
+  filebeat.modules:
+
+  filebeat.inputs:
+  - type: log
+    enabled: true
+    paths:
+      - /var/log/*.log
+    fields:
+      type: "logs"
+
+  output.elasticsearch:
+    enabled: true
+    hosts: ["{{ filebeat_output_elasticsearch }}"]
+    compression_level: 3
+    index: "{{ filebeat_index }}"
+
+    ssl.enabled: false
+    ssl.certificate_authorities: ["{{ filebeat_ssl_dir }}/{{ filebeat_ssl_certificate_authorities_file }}"]
+    ssl.certificate: "{{ filebeat_ssl_dir }}/{{ filebeat_ssl_certificate_file }}"
+    ssl.key: "{{ filebeat_ssl_dir }}/{{ filebeat_ssl_key_file }}"
+    ssl.key_passphrase: ''
+
+  output.logstash:
+    enabled: false
+    hosts: ["{{ filebeat_output_logstash }}"]
+    compression_level: 3
+    slow_start: true
+    index: 'filebeat'
+
+    ssl.enabled: false
+    ssl.certificate_authorities: ["{{ filebeat_ssl_dir }}/{{ filebeat_ssl_certificate_authorities_file }}"]
+    ssl.certificate: "{{ filebeat_ssl_dir }}/{{ filebeat_ssl_certificate_file }}"
+    ssl.key: "{{ filebeat_ssl_dir }}/{{ filebeat_ssl_key_file }}"
+    ssl.key_passphrase: ''
+
+  setup.template.enabled: false
+  setup.template.name: "{{ filebeat_index }}"
+  setup.template.pattern: "filebeat-{[fields.type]:other}-*"
+
+  logging.level: info
+  logging.to_files: true
+  logging.files:
+    path: /var/log/filebeat
+    name: filebeat.log
+    rotateeverybytes: 10485760 # = 10MB
+    keepfiles: 7
+    permissions: 0600
