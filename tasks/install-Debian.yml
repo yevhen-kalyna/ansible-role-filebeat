@@ -1,10 +1,12 @@
 ---
 - name: Ensure dependency is installed (Ubuntu).
+  become: true
   apt:
     name: apt-transport-https
     state: present
 
 - name: Add Elasticsearch apt key.
+  become: true
   apt_key:
     url: "{{ filebeat_repo_key }}"
     id: 46095ACC8548582C1A2699A9D27D666CD88E42B4
@@ -12,6 +14,7 @@
     validate_certs: "no"
 
 - name: Add Filebeat repository.
+  become: true
   apt_repository:
     repo: 'deb https://artifacts.elastic.co/packages/{{ es_major_version }}/apt stable main'
     state: present
@@ -19,6 +22,7 @@
   when: not es_is_oss | bool
 
 - name: Add Filebeat OSS repository.
+  become: true
   apt_repository:
     repo: 'deb https://artifacts.elastic.co/packages/oss-{{ es_major_version }}/apt stable main'
     state: present
@@ -26,6 +30,7 @@
   when: es_is_oss | bool
 
 - name: Install Filebeat.
+  become: true
   package:
     name: "filebeat"
     state: present

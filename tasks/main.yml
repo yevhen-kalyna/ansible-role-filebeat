@@ -8,6 +8,7 @@
   include: "install-{{ ansible_os_family }}.yml"
 
 - name: Create Filebeat config file
+  become: true
   template:
     src: "templates/filebeat.yml.j2"
     dest: "{{ filebeat_config_file }}"
@@ -18,6 +19,7 @@
     - config
 
 - name: Ensure Filebeat SSL key pair directory exists.
+  become: true
   file:
     path: "{{ filebeat_ssl_dir }}"
     state: directory
@@ -26,6 +28,7 @@
     - filebeat_ssl_key_file | bool
     - filebeat_ssl_certificate_file | bool
 - name: Copy SSL key and cert for filebeat.
+  become: true
   copy:
     src: "{{ item }}"
     dest: "{{ filebeat_ssl_dir }}/{{ item | basename }}"
@@ -40,6 +43,7 @@
     - filebeat_ssl_certificate_file | bool
 
 - name: Enable Filebeat to start at boot
+  become: true
   service:
     name: filebeat
     state: "{{ filebeat_run_state | default('started') }}"
