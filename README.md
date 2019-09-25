@@ -202,7 +202,7 @@ Including an example of how to use role:
 ---
 - hosts: all
   roles:
-    - role: yevhen-kalyna.filebeat
+    - role: yevhen_kalyna.filebeat
   vars:
     filebeat_output_elasticsearch: "https://mydomain.eu-west-1.aws.com:443"
 ```
@@ -213,7 +213,7 @@ Including an example of how to use role:
 ---
 - hosts: all
   roles:
-    - role: yevhen-kalyna.filebeat
+    - role: yevhen_kalyna.filebeat
   vars:
     filebeat_output_elasticsearch: "https://mydomain.us-west-2.es.amazonaws.com:443"
     filebeat_output_elasticsearch_enabled: true
